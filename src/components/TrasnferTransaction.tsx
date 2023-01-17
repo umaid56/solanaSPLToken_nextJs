@@ -13,9 +13,6 @@ import {
   TOKEN_PROGRAM_ID,
 } from "@solana/spl-token";
 
-
-
-
 import {
   TransactionSignature,
   PublicKey,
@@ -23,10 +20,8 @@ import {
   GetProgramAccountsFilter,
 } from "@solana/web3.js";
 
-
-import  {Metadata}  from "@metaplex-foundation/mpl-token-metadata";
-
-
+// let accountBundlers = new Map();
+// accountBundlers.set("someaddress", 10)
 
 const classNames = (...classes) => {
   return classes.filter(Boolean).join(" ");
@@ -74,11 +69,6 @@ export const TransferSPLTokens: FC = () => {
               bytes: publicKey.toBase58(), //our search criteria, a base58 encoded string
             },
           },
-            //       {
-            // memcmp: {
-            // offset: 0, //number of bytes
-            // bytes: new PublicKey("5BHUUPKtRQUrPXkDPPdviy8NTJ2QL1UTnhWTVX6ovtKi").toBase58(), //base58 encoded string
-            // },}
         ];
 
         const accounts = await connection.getParsedProgramAccounts(
@@ -87,7 +77,7 @@ export const TransferSPLTokens: FC = () => {
         );
         console.log(
           `Found ${
-            accounts
+            accounts.length
           } token account(s) for wallet ${publicKey.toBase58()}.`
         );
 
@@ -97,9 +87,6 @@ export const TransferSPLTokens: FC = () => {
         accounts.forEach((account, i) => {
           //Parse the account data
           const parsedAccountInfo: any = account.account.data;
-
-          console.log("parsedAccountInfo", account.account);
-
           const mintAddress: string =
             parsedAccountInfo["parsed"]["info"]["mint"];
           const tokenBalance: number =
@@ -111,33 +98,6 @@ export const TransferSPLTokens: FC = () => {
 
         console.log("getTokenAddressAndBalance",Array.from((accountsAndBalance).keys()));
         setView(true);
-
-
-        
-        const existingMintPkey = new PublicKey('5BHUUPKtRQUrPXkDPPdviy8NTJ2QL1UTnhWTVX6ovtKi');
-        const TOKEN_METADATA_PROGRAM_ID = new PublicKey('metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s');
-        let someTokenAddress = await PublicKey.findProgramAddress(
-            [Buffer.from("metadata"), 
-            TOKEN_METADATA_PROGRAM_ID.toBuffer(), 
-            existingMintPkey.toBuffer()],
-            TOKEN_METADATA_PROGRAM_ID
-          );
-
-
-          var u8 = new Uint8Array([65, 66, 67, 68]);
-          var decoder = new TextDecoder('utf8');
-          var b64encoded = Buffer.from(decoder.decode(u8));
-        console.log("metadata: ", someTokenAddress[0].toString())
-        const output  = Buffer.from(((await connection.getAccountInfo(someTokenAddress[0])).data).toString(), 'base64')
-        console.log("accounts run: ", (await connection.getAccountInfo(someTokenAddress[0])).data)
-        console.log("output run: ", output.toString())
-        console.log("b64encoded run: ", b64encoded)
-        console.log("b64encoded run: ", Buffer.from(String.fromCharCode.apply(null, someTokenAddress[0])))
-
-        
-          // const existingMintPkey = usePublicKey((new PublicKey('5BHUUPKtRQUrPXkDPPdviy8NTJ2QL1UTnhWTVX6ovtKi')).toString());
-          // const { metadata } = useMetaplexTokenMetadata(existingMintPkey);
-          // console.log("metadata:", metadata);
       }
 
 
